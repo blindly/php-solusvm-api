@@ -68,10 +68,19 @@ class Solus
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $postfields);
-		$response = curl_exec($ch);
+		$data = curl_exec($ch);
 		curl_close($ch);
+		
+		// Parse the returned data and build an array
 
-		return $response;
+		preg_match_all('/<(.*?)>([^<]+)<\/\\1>/i', $data, $match);
+		$result = array();
+		foreach ($match[1] as $x => $y) {
+			$result[$y] = $match[2][$x];
+		}
+
+		return $data;
+		
 	}
 
 	/**
